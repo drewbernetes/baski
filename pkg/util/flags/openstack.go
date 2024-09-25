@@ -18,8 +18,6 @@ package flags
 
 import (
 	"fmt"
-	"github.com/drewbernetes/baski/pkg/util/completion"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -38,17 +36,6 @@ func (o *OpenStackCoreFlags) SetOptionsFromViper() {
 
 }
 
-func (o *OpenStackCoreFlags) AddFlags(cmd *cobra.Command, viperPrefix string) {
-	PersistentStringVarWithViper(cmd, &o.CloudsPath, viperPrefix, "clouds-file", "~/.config/openstack/clouds.yaml", "--DEPRECATED-- USE THE CONFIG FILE. The location of the openstack clouds.yaml file to use")
-	PersistentStringVarWithViper(cmd, &o.CloudName, viperPrefix, "cloud-name", "", "--DEPRECATED-- USE THE CONFIG FILE. The name of the cloud profile to use from the clouds.yaml file")
-	StringVarWithViper(cmd, &o.MetadataPrefix, viperPrefix, "metadata-prefix", "", "--DEPRECATED-- USE THE CONFIG FILE. If a prefix is required on any metadata properties, it can be set here. The result being <prefix>:<metadata>")
-
-	if err := cmd.RegisterFlagCompletionFunc("cloud-name", completion.CloudCompletionFunc); err != nil {
-		panic(err)
-	}
-	cmd.MarkFlagsRequiredTogether("clouds-file", "cloud-name")
-}
-
 // OpenStackInstanceFlags are Additional flags that can would be required for other steps such as scan, sign and publish.
 type OpenStackInstanceFlags struct {
 	AttachConfigDrive bool
@@ -61,12 +48,6 @@ func (o *OpenStackInstanceFlags) SetOptionsFromViper() {
 	o.NetworkID = viper.GetString(fmt.Sprintf("%s.network-id", viperOpenStackPrefix))
 	o.FlavorName = viper.GetString(fmt.Sprintf("%s.flavor-name", viperOpenStackPrefix))
 	o.AttachConfigDrive = viper.GetBool(fmt.Sprintf("%s.attach-config-drive", viperOpenStackPrefix))
-}
-
-func (o *OpenStackInstanceFlags) AddFlags(cmd *cobra.Command, viperPrefix string) {
-	StringVarWithViper(cmd, &o.NetworkID, viperPrefix, "network-id", "", "--DEPRECATED-- USE THE CONFIG FILE. Network ID to deploy the server onto for scanning")
-	StringVarWithViper(cmd, &o.FlavorName, viperPrefix, "flavor-name", "", "--DEPRECATED-- USE THE CONFIG FILE. The Name of the instance flavor to use for the build")
-	BoolVarWithViper(cmd, &o.AttachConfigDrive, viperPrefix, "attach-config-drive", false, "--DEPRECATED-- USE THE CONFIG FILE. Whether or not nova should use ConfigDrive for cloud-init metadata.")
 }
 
 // OpenStackFlags are explicitly for OpenStack based clouds and defines settings that pertain only to that cloud type.
@@ -103,23 +84,4 @@ func (q *OpenStackFlags) SetOptionsFromViper() {
 
 	q.OpenStackCoreFlags.SetOptionsFromViper()
 	q.OpenStackInstanceFlags.SetOptionsFromViper()
-}
-
-func (q *OpenStackFlags) AddFlags(cmd *cobra.Command, viperPrefix string) {
-	StringVarWithViper(cmd, &q.SourceImageID, viperPrefix, "source-image-id", "ubuntu-2204", "--DEPRECATED-- USE THE CONFIG FILE. The ID of the image that will be used as a base for the newly built image")
-	StringVarWithViper(cmd, &q.SSHPrivateKeyFile, viperPrefix, "ssh-privatekey-file", "", "--DEPRECATED-- USE THE CONFIG FILE. The Private Key to use when using ssh-keypair-name")
-	StringVarWithViper(cmd, &q.SSHKeypairName, viperPrefix, "ssh-keypair-name", "", "--DEPRECATED-- USE THE CONFIG FILE. Define an SSH Keypair to use instead of generating automatically")
-	BoolVarWithViper(cmd, &q.UseFloatingIP, viperPrefix, "use-floating-ip", true, "--DEPRECATED-- USE THE CONFIG FILE. Whether to use a floating IP for the instance")
-	StringVarWithViper(cmd, &q.FloatingIPNetworkName, viperPrefix, "floating-ip-network-name", "public1", "--DEPRECATED-- USE THE CONFIG FILE. The Name of the network in which to create the floating ip")
-	StringVarWithViper(cmd, &q.SecurityGroup, viperPrefix, "security-group", "", "--DEPRECATED-- USE THE CONFIG FILE. Specify the security groups to attach")
-	StringVarWithViper(cmd, &q.ImageVisibility, viperPrefix, "image-visibility", "", "--DEPRECATED-- USE THE CONFIG FILE. Change the image visibility in Openstack - you need to ensure the use you're authenticating with has permissions to do so or this will fail")
-	StringVarWithViper(cmd, &q.ImageDiskFormat, viperPrefix, "image-disk-format", "", "--DEPRECATED-- USE THE CONFIG FILE. The image disk format in Openstack")
-	StringVarWithViper(cmd, &q.UseBlockStorageVolume, viperPrefix, "use-blockstorage-volume", "", "--DEPRECATED-- USE THE CONFIG FILE. Use Block Storage service volume for the instance root volume instead of Compute service local volume")
-	StringVarWithViper(cmd, &q.VolumeType, viperPrefix, "volume-type", "", "--DEPRECATED-- USE THE CONFIG FILE. Type of the Block Storage service volume. If this isn't specified, the default enforced by your OpenStack cluster will be used")
-	IntVarWithViper(cmd, &q.VolumeSize, viperPrefix, "volume-size", 0, "--DEPRECATED-- USE THE CONFIG FILE. Size of the Block Storage service volume in GB. If this isn't specified, it is set to source image min disk value (if set) or calculated from the source image bytes size. Note that in some cases this needs to be specified, if use_blockstorage_volume is true")
-
-	q.OpenStackCoreFlags.AddFlags(cmd, viperPrefix)
-	q.OpenStackInstanceFlags.AddFlags(cmd, viperPrefix)
-
-	cmd.MarkFlagsRequiredTogether("use-floating-ip", "floating-ip-network-name")
 }

@@ -81,7 +81,6 @@ If using vault, the key should be stored as follows:
 			return nil
 		},
 	}
-	o.AddFlags(cmd)
 
 	return cmd
 }

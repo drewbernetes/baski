@@ -18,7 +18,6 @@ package flags
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -52,26 +51,6 @@ func (o *SignOptions) SetOptionsFromViper() {
 	o.SignGenerateOptions.SetOptionsFromViper()
 }
 
-// AddFlags adds additional flags to the subcommands that call this.
-func (o *SignOptions) AddFlags(cmd *cobra.Command) {
-	StringVarWithViper(cmd, &o.ImageID, viperSignPrefix, "image-id", "", "--DEPRECATED-- USE THE CONFIG FILE. The image ID of the image to sign")
-	StringVarWithViper(cmd, &o.VaultURL, viperVaultPrefix, "url", "", "--DEPRECATED-- USE THE CONFIG FILE. The Vault URL from which you will pull the private key")
-	StringVarWithViper(cmd, &o.VaultToken, viperVaultPrefix, "token", "", "--DEPRECATED-- USE THE CONFIG FILE. The token used to log into vault")
-	StringVarWithViper(cmd, &o.VaultMountPath, viperVaultPrefix, "mount-path", "", "--DEPRECATED-- USE THE CONFIG FILE. The mount path to the secret vault")
-	StringVarWithViper(cmd, &o.VaultSecretPath, viperVaultPrefix, "secret-name", "", "--DEPRECATED-- USE THE CONFIG FILE. The name of the secret within the mount path")
-
-	StringVarWithViper(cmd, &o.PrivateKey, viperSignPrefix, "private-key", "", "--DEPRECATED-- USE THE CONFIG FILE. The path to the private key that will be used to sign the image")
-	StringVarWithViper(cmd, &o.PublicKey, viperSignPrefix, "public-key", "", "--DEPRECATED-- USE THE CONFIG FILE. The path to the private key that will be used to sign the image")
-
-	o.BaseOptions.AddFlags(cmd)
-	o.OpenStackCoreFlags.AddFlags(cmd, viperOpenStackPrefix)
-	o.SignGenerateOptions.AddFlags(cmd)
-
-	cmd.MarkFlagsMutuallyExclusive("url", "private-key")
-	cmd.MarkFlagsMutuallyExclusive("url", "public-key")
-	cmd.MarkFlagsRequiredTogether("url", "token", "mount-path", "secret-name")
-}
-
 // SignGenerateOptions contains additional options for the 'generate' subcommand.
 type SignGenerateOptions struct {
 	Path string
@@ -80,10 +59,4 @@ type SignGenerateOptions struct {
 // SetOptionsFromViper configures options passed in via viper for the struct.
 func (o *SignGenerateOptions) SetOptionsFromViper() {
 	o.Path = viper.GetString(fmt.Sprintf("%s.path", viperGeneratePrefix))
-}
-
-// AddFlags adds flags to the 'generate' subcommand and binds them to the 'generate' options.
-func (o *SignGenerateOptions) AddFlags(cmd *cobra.Command) {
-	StringVarWithViper(cmd, &o.Path, viperGeneratePrefix, "path", "/tmp/baski", "--DEPRECATED-- USE THE CONFIG FILE. A directory location in which to output the generated keys")
-
 }

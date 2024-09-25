@@ -18,7 +18,6 @@ package flags
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -36,14 +35,4 @@ func (o *S3Flags) SetOptionsFromViper() {
 	o.SecretKey = viper.GetString(fmt.Sprintf("%s.secret-key", viperS3Prefix))
 	o.Region = viper.GetString(fmt.Sprintf("%s.region", viperS3Prefix))
 	o.IsCeph = viper.GetBool(fmt.Sprintf("%s.is-ceph", viperS3Prefix))
-}
-
-func (o *S3Flags) AddFlags(cmd *cobra.Command) {
-	StringVarWithViper(cmd, &o.Endpoint, viperS3Prefix, "endpoint", "", "--DEPRECATED-- USE THE CONFIG FILE. The endpoint of the bucket from which to download resources")
-	StringVarWithViper(cmd, &o.AccessKey, viperS3Prefix, "access-key", "", "--DEPRECATED-- USE THE CONFIG FILE. The access key used to access the bucket from which to download resources")
-	StringVarWithViper(cmd, &o.SecretKey, viperS3Prefix, "secret-key", "", "--DEPRECATED-- USE THE CONFIG FILE. The secret key used to access the bucket from which to download resources")
-	StringVarWithViper(cmd, &o.Region, viperS3Prefix, "region", "us-east-1", "--DEPRECATED-- USE THE CONFIG FILE. The region of the S3 endpoint")
-	BoolVarWithViper(cmd, &o.IsCeph, viperS3Prefix, "is-ceph", false, "--DEPRECATED-- USE THE CONFIG FILE. If the S3 endpoint is CEPH then set this to true to allow ansible to work with the endpoint")
-
-	cmd.MarkFlagsRequiredTogether("access-key", "secret-key")
 }

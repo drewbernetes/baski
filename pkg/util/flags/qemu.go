@@ -18,7 +18,6 @@ package flags
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -34,10 +33,4 @@ func (q *QEMUFlags) SetOptionsFromViper() {
 	q.QemuBinary = viper.GetString(fmt.Sprintf("%s.qemu-binary", viperKubeVirtPrefix))
 	q.DiskSize = viper.GetString(fmt.Sprintf("%s.disk-size", viperKubeVirtPrefix))
 	q.OutputDirectory = viper.GetString(fmt.Sprintf("%s.output-directory", viperKubeVirtPrefix))
-}
-
-func (q *QEMUFlags) AddFlags(cmd *cobra.Command, viperPrefix string) {
-	StringVarWithViper(cmd, &q.QemuBinary, viperPrefix, "qemu-binary", "qemu-system-x86_64", "--DEPRECATED-- USE THE CONFIG FILE. The name of the qemu-system-x86_64 binary to use")
-	StringVarWithViper(cmd, &q.DiskSize, viperPrefix, "disk-size", "10G", "--DEPRECATED-- USE THE CONFIG FILE. The size of the VM disk")
-	StringVarWithViper(cmd, &q.OutputDirectory, viperPrefix, "output-directory", "/tmp/image-output/", "--DEPRECATED-- USE THE CONFIG FILE. The directory in which images will be stored once built")
 }

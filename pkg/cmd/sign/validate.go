@@ -67,7 +67,6 @@ This just validates a signature. It's useful for verifying a signed image.
 			return nil
 		},
 	}
-	o.AddFlags(cmd)
 
 	return cmd
 }

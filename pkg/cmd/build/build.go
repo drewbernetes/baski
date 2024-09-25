@@ -104,8 +104,6 @@ By using this, the time is reduced and automation can be enabled.`,
 		},
 	}
 
-	o.AddFlags(cmd, imageBuilderRepo)
-
 	return cmd
 }
 

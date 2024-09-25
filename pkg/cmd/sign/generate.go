@@ -80,7 +80,5 @@ It will generate a public and private key that can then be stored securely.
 		},
 	}
 
-	o.AddFlags(cmd)
-
 	return cmd
 }

@@ -18,7 +18,6 @@ package flags
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -30,8 +29,4 @@ type KubernetesClusterFlags struct {
 // SetOptionsFromViper configures additional options passed in via viper for the struct.
 func (k *KubernetesClusterFlags) SetOptionsFromViper() {
 	k.KubeconfigPath = viper.GetString(fmt.Sprintf("%s.kubeconfig-path", viperKubernetesClusterPrefix))
-}
-
-func (k *KubernetesClusterFlags) AddFlags(cmd *cobra.Command) {
-	StringVarWithViper(cmd, &k.KubeconfigPath, viperKubernetesClusterPrefix, "kubeconfig-path", "", "The KubeConfig to use for cluster interaction")
 }

@@ -72,7 +72,5 @@ If a visibility has been set in the config, this will be respected and no change
 		},
 	}
 
-	o.AddFlags(cmd)
-
 	return cmd
 }
