@@ -105,7 +105,11 @@ func generateTrivyFile(s3 interfaces.S3Interface, ignoreFileName string, ignoreL
 	var err error
 
 	//We return nothing if there are no checks required
-	if ignoreList[0] == "[]" && len(ignoreFileName) == 0 {
+	if len(ignoreFileName) == 0 {
+		return nil
+	}
+
+	if len(ignoreList) == 0 || ignoreList[0] == "[]" {
 		return nil
 	}
 

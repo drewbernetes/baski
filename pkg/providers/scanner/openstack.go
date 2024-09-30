@@ -54,6 +54,7 @@ func (s *OpenStackScannerClient) RunScan(o *flags.ScanOptions) error {
 	}
 	err = s.getFip(o.OpenStackFlags.FloatingIPNetworkName)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -210,7 +211,7 @@ func (s *OpenStackScannerClient) buildServer(flavor, networkID, imgID string, at
 	checkLimit := 0
 	for !state {
 		if checkLimit > 100 {
-			panic(errors.New("server failed to com online after 500 seconds"))
+			panic(errors.New("server failed to come online after 500 seconds"))
 		}
 		log.Println("server not active, waiting 5 seconds and then checking again")
 		time.Sleep(5 * time.Second)
